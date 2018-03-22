@@ -1,0 +1,85 @@
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Iterator;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
+
+public class copyingexcelfile {
+
+	public static void main(String[] args) throws IOException 
+	{
+		 
+		File inputFile = new File("C:\\Users\\Manpreet Singh Kohli\\Desktop\\poi-3.17\\sample-xlsx-file.xlsx");
+		FileInputStream aaa = new FileInputStream(inputFile);
+		XSSFWorkbook iw = new XSSFWorkbook(aaa);
+		int isc=iw.getNumberOfSheets();
+		System.out.println("Input Sheet Count: "+isc);
+		
+		
+		File of=new File("C:\\Users\\Manpreet Singh Kohli\\Desktop\\poi-3.17\\copiedexcelfile.xlsx");
+		FileOutputStream fos=new FileOutputStream(of);
+		
+		
+		XSSFWorkbook ow=new XSSFWorkbook();
+		
+		
+		for(int i=0;i<isc;i++) 
+                { 
+                  XSSFSheet is=iw.getSheetAt(i); 
+                  String isn=iw.getSheetName(i); 
+                  XSSFSheet os=ow.createSheet(isn); 
+
+                 
+                 copySheet(is,os); 
+                }
+
+               
+               ow.write(fos); 
+              
+               
+               fos.close(); 
+               ow.close();
+               iw.close();
+
+	       }
+
+           public static void copySheet(XSSFSheet inputSheet,XSSFSheet outputSheet) 
+           { 
+              int rc=inputSheet.getLastRowNum(); 
+              System.out.println(rc+" rows in inputsheet "+inputSheet.getSheetName()); 
+               
+                int cri=0; if(rc>0)
+		{
+			Iterator<Row> ri=inputSheet.iterator();
+			while(ri.hasNext())
+			{
+				int cci=0;
+				Iterator<Cell> ci=ri.next().cellIterator();
+				while(ci.hasNext())
+				{
+					
+				  
+					String cellData=ci.next().toString();
+					
+					if(cci==0)
+					    outputSheet.createRow(cri).createCell(cci).setCellValue(cellData);
+					
+					else
+						
+						outputSheet.getRow(cri).createCell(cci).setCellValue(cellData);
+					
+					cci++;
+				}
+				cri++;
+			}
+			System.out.println((cri-1)+" rows added to outputsheet "+outputSheet.getSheetName());
+			System.out.println();
+		
+		    }    
+        }
+}
